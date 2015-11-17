@@ -8,7 +8,12 @@ var prefix = require("gulp-autoprefixer");
 var del = require("del");
 
 gulp.task("clean", function (done) {
-  del(["dist"], done);
+  // sync approach:
+  // del.sync(["dist"]);
+  // done();
+  
+  // async approach (.then(done) not working, so wrapping in an anon fun):
+  del(["dist"]).then(function () { done(); });
 });
 
 gulp.task("test", function () {
@@ -37,4 +42,9 @@ gulp.task("styles", function () {
     .pipe(prefix())
     .pipe(gulp.dest("dist"));
 });
+
+gulp.task("default",
+  gulp.series("clean", gulp.parallel("styles", "scripts"))
+);
+
 
