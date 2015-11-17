@@ -22,8 +22,8 @@ gulp.task("test", function () {
 });
 
 gulp.task("scripts",
-  gulp.series("test", function () {
-    return gulp.src([ "app/scripts/vendor/**/*.js", "app/scripts/**/*.js"])
+  gulp.series("test", function scriptsInternal() {
+    return gulp.src(["app/scripts/**/*.js", "!app/scripts/vendor/**/*.js"])
       .pipe(concat("main.min.js"))
       .pipe(uglify())
       .pipe(gulp.dest("dist"));
