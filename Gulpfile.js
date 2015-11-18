@@ -6,6 +6,16 @@ var less = require("gulp-less");
 var minifyCSS = require("gulp-minify-css");
 var prefix = require("gulp-autoprefixer");
 var del = require("del");
+var bSync = require("browser-sync");
+
+gulp.task("server", function (done) {
+  bSync({
+    server: {
+      baseDir: ["dist", "app"]
+    }
+  });
+  done();
+});
 
 gulp.task("clean", function (done) {
   // sync approach:
@@ -44,7 +54,14 @@ gulp.task("styles", function () {
 });
 
 gulp.task("default",
-  gulp.series("clean", gulp.parallel("styles", "scripts"))
-);
+  gulp.series("clean",
+              gulp.parallel("styles", "scripts"),
+             "server",
+             function watcher(done) {
+               gulp.watch(["app/scripts/**/*.js", "!app/scripts/vendor/**/*.js"], gulp.parallel("scripts"));
+               gulp.watch(["app/styles/**/*.less"], gulp.parallel("styles"));
+               gulp.watch(["dist/**/*"], bSync.reload);
+               done();
+             }));
 
 

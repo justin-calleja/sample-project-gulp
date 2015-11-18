@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/frontend-tooling/sample-project-gulp#readme",
   "devDependencies": {
+    "browser-sync": "^2.10.0",
     "del": "^2.1.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.0",
