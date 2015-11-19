@@ -1,1 +1,11 @@
 npm install gulpjs/gulp-cli#4.0 -g
+
+Some npm scripts I've used to test and have removed:
+
+    "postcss": "lessc app/styles/main.less | postcss --use autoprefixer -o ./mydist/postcss.css",
+    "nopostcss": "lessc app/styles/main.less ./mydist/nopostcss.css",
+
+    "clean": "rm -rf ./mydist && mkdir ./mydist",
+    "clean": "rimraf ./mydist/*",
+
+

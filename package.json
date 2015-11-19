@@ -3,7 +3,17 @@
   "version": "1.0.0",
   "description": "The sample project we will use throughout the Gulp chapters",
   "main": "index.js",
+  "config": {
+    "distDir": "dist"
+  },
   "scripts": {
+    "predefault": "npm run clean",
+    "default": "npm run styles & npm run scripts",
+    "clean": "n-clean $npm_package_config_distDir/*",
+    "styles": "lessc app/styles/main.less | cleancss | postcss --use autoprefixer -o $npm_package_config_distDir/main.min.css",
+    "lint": "jshint app/scripts --exclude=app/scripts/vendor",
+    "prescripts": "npm run lint",
+    "scripts": "n-concat 'app/scripts/**' -i 'app/scripts/vendor/**' | uglifyjs -c -m > $npm_package_config_distDir/main.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,7 +35,8 @@
     "gulp-jshint": "^1.12.0",
     "gulp-less": "^3.0.5",
     "gulp-minify-css": "^1.2.1",
-    "gulp-uglify": "^1.5.1"
+    "gulp-uglify": "^1.5.1",
+    "npm-build-tools": "^2.2.5"
   },
   "dependencies": {}
 }
