@@ -8,12 +8,19 @@
   },
   "scripts": {
     "predefault": "npm run clean",
-    "default": "npm run styles & npm run scripts",
-    "clean": "n-clean $npm_package_config_distDir/*",
-    "styles": "lessc app/styles/main.less | cleancss | postcss --use autoprefixer -o $npm_package_config_distDir/main.min.css",
+    "default": "npm run styles && npm run scripts && npm run html",
+    "postdefault": "npm run server:bsync & npm run watch:all",
+    "clean": "n-clean $npm_package_config_distDir/* && mkdir -p $npm_package_config_distDir/scripts && mkdir -p $npm_package_config_distDir/styles",
+    "styles": "lessc app/styles/main.less | cleancss | postcss --use autoprefixer -o $npm_package_config_distDir/styles/main.min.css",
+    "html": "n-copy --source='app' --destination=$npm_package_config_distDir --ignore='{scripts/**,styles/**}' '**/*.html'",
     "lint": "jshint app/scripts --exclude=app/scripts/vendor",
     "prescripts": "npm run lint",
-    "scripts": "n-concat 'app/scripts/**' -i 'app/scripts/vendor/**' | uglifyjs -c -m > $npm_package_config_distDir/main.min.js",
+    "scripts": "n-concat 'app/scripts/**' -i 'app/scripts/vendor/**' | uglifyjs -c -m > $npm_package_config_distDir/scripts/main.min.js",
+    "server:bsync": "browser-sync start --files $npm_package_config_distDir/**/* --server $npm_package_config_distDir",
+    "watch:all": "parallelshell 'npm run watch:scripts' 'npm run watch:styles' 'npm run watch:html'",
+    "watch:scripts": "nodemon -e js -w app/scripts --ignore app/scripts/vendor -x 'npm run scripts'",
+    "watch:styles": "nodemon -e less -w app/styles -x 'npm run styles'",
+    "watch:html": "nodemon -e html -w app -x 'npm run html'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,7 +43,9 @@
     "gulp-less": "^3.0.5",
     "gulp-minify-css": "^1.2.1",
     "gulp-uglify": "^1.5.1",
-    "npm-build-tools": "^2.2.5"
+    "nodemon": "^1.8.1",
+    "npm-build-tools": "^2.2.5",
+    "parallelshell": "^2.0.0"
   },
   "dependencies": {}
 }

@@ -8,4 +8,32 @@ Some npm scripts I've used to test and have removed:
     "clean": "rm -rf ./mydist && mkdir ./mydist",
     "clean": "rimraf ./mydist/*",
 
+    "watch:scripts": "watch 'npm run scripts' app/scripts",
+    "livereload": "live-reload --port 9091 $npm_package_config_distDir",
+    "default": "npm run styles & npm run scripts & npm run html && wait; npm run server:bsync",
 
+dependencies:
+    "watch": "^0.16.0"
+
+Able to use in package.json:
+    "prelivereload": "sed 's/<\\/html>/<script src=\"\\/\\/localhost:9091\"><\\/script>\\\n&/' app/index.html",
+
+---
+
+  "scripts": {
+    "predefault": "npm run clean",
+    "default": "npm run styles && npm run scripts && npm run html",
+    "postdefault": "npm run server:bsync && npm run watch:all",
+    "clean": "n-clean $npm_package_config_distDir/*",
+    "styles": "lessc app/styles/main.less | cleancss | postcss --use autoprefixer -o $npm_package_config_distDir/styles/main.min.css",
+    "html": "n-copy --source='app' --destination=$npm_package_config_distDir --ignore='{scripts/**,styles/**}' '**/*.html'",
+    "lint": "jshint app/scripts --exclude=app/scripts/vendor",
+    "prescripts": "npm run lint",
+    "scripts": "n-concat 'app/scripts/**' -i 'app/scripts/vendor/**' | uglifyjs -c -m > $npm_package_config_distDir/scripts/main.min.js",
+    "server:bsync": "browser-sync start --files $npm_package_config_distDir/**/* --server $npm_package_config_distDir",
+    "watch:all": "parallelshell 'npm run watch:scripts' 'npm run watch:styles' 'npm run watch:html'",
+    "watch:scripts": "watch 'npm run scripts' app/scripts -d -i '^app/scripts/vendor'",
+    "watch:styles": "watch 'npm run styles' app/styles -d",
+    "watch:html": "watch 'npm run html' app -d -i '!\\.html$'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
